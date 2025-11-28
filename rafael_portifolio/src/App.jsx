@@ -8,6 +8,8 @@ import linkedinPicture from "./assets/images/picture.jpg";
 function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const autoAdvanceTimerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth <= 480);
 
   // Sample projects data - replace with your actual projects
   const projects = [
@@ -55,6 +57,16 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setIsSmallMobile(window.innerWidth <= 480);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? projects.length - 1 : prevIndex - 1
@@ -95,9 +107,17 @@ function App() {
           <div
             className="carousel-track"
             style={{
-              transform: `translateX(calc(20% - ${(currentIndex + 1) * 60}% - ${
-                (currentIndex + 1) * 2
-              }rem))`,
+              transform: isSmallMobile
+                ? `translateX(calc(50% - ${90 / 2}% - ${(currentIndex + 1) * 90}% - ${
+                    (currentIndex + 1) * 1
+                  }rem))`
+                : isMobile
+                ? `translateX(calc(50% - ${85 / 2}% - ${(currentIndex + 1) * 85}% - ${
+                    (currentIndex + 1) * 1
+                  }rem))`
+                : `translateX(calc(50% - ${60 / 2}% - ${(currentIndex + 1) * 60}% - ${
+                    (currentIndex + 1) * 2
+                  }rem))`,
             }}
           >
             {/* Last item at the beginning for seamless loop */}
